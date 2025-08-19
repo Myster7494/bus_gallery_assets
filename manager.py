@@ -1,18 +1,21 @@
 import os
 import json
 import re
-from tkinter import Tk, Frame, Listbox, Label, Entry, Button, Scrollbar, messagebox, StringVar
+import sys  # 用於判斷作業系統
+import subprocess  # 用於在 macOS/Linux 開啟檔案
+from tkinter import Tk, Frame, Listbox, Label, Entry, Button, Scrollbar, messagebox, StringVar, PanedWindow
+from PIL import Image
 
-# 程式支援的圖片副檔名
+Image.MAX_IMAGE_PIXELS = None
 SUPPORTED_FORMATS = ('.jpg', '.jpeg', '.png', '.bmp', '.gif')
 
 
 class IndexManagerApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("智慧型圖庫索引管理器 v10.0 (搜尋功能)")
+        self.root.title("圖庫索引管理器")
 
-        # --- 資料變數 ---
+        # --- 資料變數 (無變動) ---
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.pages_dir = os.path.join(self.script_dir, "pages")
         self.main_index_data = {}
@@ -21,25 +24,24 @@ class IndexManagerApp:
         self.current_image = None
 
         # --- GUI 元件 ---
-        main_frame = Frame(root, padx=10, pady=10)
-        main_frame.pack(fill='both', expand=True)
-        left_pane = Frame(main_frame, bd=2, relief='sunken')
-        left_pane.pack(side='left', fill='both', expand=True, padx=(0, 5))
-        right_pane = Frame(main_frame, bd=2, relief='sunken')
-        right_pane.pack(side='right', fill='both', expand=True, padx=(5, 0))
+        main_pane = PanedWindow(root, orient='horizontal', sashrelief='raised', bg="gray90")
+        main_pane.pack(fill='both', expand=True, padx=10, pady=10)
 
-        # --- 左側：車牌管理 ---
+        left_pane = Frame(main_pane, bd=2, relief='sunken')
+        main_pane.add(left_pane, width=350)
+
+        right_pane = Frame(main_pane, bd=2, relief='sunken')
+        main_pane.add(right_pane)
+
+        # --- 左側：車牌管理 (無變動) ---
         Label(left_pane, text="車輛檔案 (資料夾)", font=("Arial", 12, "bold")).pack(pady=5)
-
-        # --- 核心變更：新增搜尋框 ---
         search_frame = Frame(left_pane, padx=5)
         search_frame.pack(fill='x', pady=5)
         Label(search_frame, text="搜尋車牌:").pack(side='left')
         self.search_var = StringVar()
         search_entry = Entry(search_frame, textvariable=self.search_var)
         search_entry.pack(side='left', fill='x', expand=True, padx=5)
-        search_entry.bind("<KeyRelease>", self.filter_plates)  # 綁定按鍵釋放事件
-
+        search_entry.bind("<KeyRelease>", self.filter_plates)
         plate_list_frame = Frame(left_pane)
         plate_list_frame.pack(fill='both', expand=True, padx=5, pady=5)
         plate_scrollbar = Scrollbar(plate_list_frame)
@@ -48,7 +50,6 @@ class IndexManagerApp:
         self.plates_listbox.pack(side='left', fill='both', expand=True)
         plate_scrollbar.config(command=self.plates_listbox.yview)
         self.plates_listbox.bind('<<ListboxSelect>>', self.on_plate_select)
-
         plate_info_frame = Frame(left_pane)
         plate_info_frame.pack(fill='x', padx=5, pady=10)
         self.company_var, self.year_var, self.manufacturer_var, self.model_var = StringVar(), StringVar(), StringVar(), StringVar()
@@ -61,8 +62,9 @@ class IndexManagerApp:
             entry.bind("<FocusOut>", self.auto_save_main_index_from_ui)
         plate_info_frame.grid_columnconfigure(1, weight=1)
 
-        # --- 右側：圖片管理 (無變動) ---
+        # --- 右側：圖片管理 ---
         Label(right_pane, text="圖片 (檔案)", font=("Arial", 12, "bold")).pack(pady=5)
+
         image_list_frame = Frame(right_pane)
         image_list_frame.pack(fill='both', expand=True, padx=5, pady=5)
         image_scrollbar = Scrollbar(image_list_frame)
@@ -71,18 +73,24 @@ class IndexManagerApp:
         self.images_listbox.pack(side='left', fill='both', expand=True)
         image_scrollbar.config(command=self.images_listbox.yview)
         self.images_listbox.bind('<<ListboxSelect>>', self.on_image_select)
+
         image_info_frame = Frame(right_pane)
         image_info_frame.pack(fill='x', padx=5, pady=10)
         self.image_date_var, self.image_desc_var = StringVar(), StringVar()
         Label(image_info_frame, text="拍攝日期:").grid(row=0, column=0, sticky='w')
         image_date_entry = Entry(image_info_frame, textvariable=self.image_date_var)
-        image_date_entry.grid(row=0, column=1, sticky='ew', pady=(0, 2))
+        image_date_entry.grid(row=0, column=1, sticky='ew', pady=2)
         Label(image_info_frame, text="圖片說明:").grid(row=1, column=0, sticky='w')
         image_desc_entry = Entry(image_info_frame, textvariable=self.image_desc_var)
-        image_desc_entry.grid(row=1, column=1, sticky='ew')
+        image_desc_entry.grid(row=1, column=1, sticky='ew', pady=2)
         image_info_frame.grid_columnconfigure(1, weight=1)
         image_date_entry.bind("<FocusOut>", self.auto_save_vehicle_index_from_ui)
         image_desc_entry.bind("<FocusOut>", self.auto_save_vehicle_index_from_ui)
+
+        # --- 核心變更：新增「開啟圖片」按鈕 ---
+        self.open_image_button = Button(right_pane, text="在外部開啟圖片", command=self.open_image_externally,
+                                        state='disabled')
+        self.open_image_button.pack(pady=5)
 
         bottom_frame = Frame(root, padx=5, pady=2)
         bottom_frame.pack(side='bottom', fill='x')
@@ -92,6 +100,63 @@ class IndexManagerApp:
 
         self.root.after(100, self.initialize_and_scan_all)
 
+    def on_plate_select(self, event):
+        selection_indices = self.plates_listbox.curselection()
+        if not selection_indices: return
+        self.current_plate = self.plates_listbox.get(selection_indices[0])
+        plate_data = self.main_index_data.get(self.current_plate, {})
+        self.company_var.set(plate_data.get("company", ""))
+        self.year_var.set(plate_data.get("year", ""))
+        self.manufacturer_var.set(plate_data.get("manufacturer", ""))
+        self.model_var.set(plate_data.get("model", ""))
+        self.load_and_display_images()
+
+    def on_image_select(self, event):
+        selection_indices = self.images_listbox.curselection()
+        if not selection_indices: return
+        self.current_image = self.images_listbox.get(selection_indices[0])
+        image_data = self.vehicle_index_data.get(self.current_image, {})
+        self.image_date_var.set(image_data.get("date", ""))
+        self.image_desc_var.set(image_data.get("description", ""))
+        self.open_image_button.config(state='normal')  # 啟用按鈕
+        self.update_status_progress()
+
+    def open_image_externally(self):
+        """使用作業系統預設的應用程式開啟圖片"""
+        if not self.current_plate or not self.current_image:
+            messagebox.showinfo("提示", "沒有選擇任何圖片。")
+            return
+
+        image_path = os.path.join(self.pages_dir, self.current_plate, self.current_image)
+        if not os.path.exists(image_path):
+            messagebox.showerror("錯誤", f"找不到圖片檔案：\n{image_path}")
+            return
+
+        try:
+            if sys.platform == "win32":
+                os.startfile(image_path)
+            elif sys.platform == "darwin":  # macOS
+                subprocess.run(["open", image_path], check=True)
+            else:  # Linux and other Unix-like
+                subprocess.run(["xdg-open", image_path], check=True)
+        except Exception as e:
+            messagebox.showerror("開啟失敗", f"無法使用預設應用程式開啟圖片。\n錯誤訊息: {e}")
+
+    def clear_right_panels(self):
+        self.company_var.set("")
+        self.year_var.set("")
+        self.manufacturer_var.set("")
+        self.model_var.set("")
+        self.images_listbox.delete(0, 'end')
+        self.current_image = None
+        self.clear_image_fields()
+
+    def clear_image_fields(self):
+        self.image_date_var.set("")
+        self.image_desc_var.set("")
+        self.open_image_button.config(state='disabled')  # 清除時禁用按鈕
+
+    # --- 以下是其他未變動的函式 ---
     def initialize_and_scan_all(self):
         self._sync_main_index()
         self.status_label.config(text="正在掃描並生成所有索引...")
@@ -101,21 +166,45 @@ class IndexManagerApp:
         self.status_label.config(text="所有索引已同步完成。")
         self.populate_plates_listbox()
 
+    def _sync_vehicle_index(self, plate_folder):
+        vehicle_dir = os.path.join(self.pages_dir, plate_folder)
+        vehicle_index_path = os.path.join(vehicle_dir, 'index.json')
+        is_dirty, vehicle_data = False, {}
+        try:
+            with open(vehicle_index_path, 'r', encoding='utf-8') as f:
+                vehicle_data = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            is_dirty = True
+        initial_keys = set(vehicle_data.keys())
+        found_images = {f for f in os.listdir(vehicle_dir) if f.lower().endswith(SUPPORTED_FORMATS)}
+        for img_filename in found_images:
+            entry = vehicle_data.get(img_filename)
+            if not entry:
+                match = re.match(r".*?_(\d{4}-\d{2}-\d{2})", img_filename)
+                date_guess = match.group(1) if match else "YYYY-MM-DD"
+                entry = {"date": date_guess, "description": ""}
+                vehicle_data[img_filename] = entry
+                is_dirty = True
+            if "width" not in entry or "height" not in entry:
+                try:
+                    with Image.open(os.path.join(vehicle_dir, img_filename)) as img:
+                        width, height = img.size
+                        entry["width"], entry["height"] = width, height
+                        is_dirty = True
+                except Exception as e:
+                    print(f"警告：無法讀取圖片 '{img_filename}' 的解析度。錯誤: {e}")
+                    entry["width"], entry["height"] = 0, 0
+        images_to_remove = [img for img in vehicle_data if img not in found_images]
+        for img in images_to_remove: del vehicle_data[img]
+        if initial_keys != set(vehicle_data.keys()): is_dirty = True
+        if is_dirty: self._write_vehicle_index(plate_folder, vehicle_data)
+
     def filter_plates(self, event=None):
-        """根據搜尋框內容過濾車牌列表"""
         search_term = self.search_var.get().upper().strip()
-
-        # 清空現有列表
         self.plates_listbox.delete(0, 'end')
-
-        # 篩選並重新填入
         all_plates = sorted(self.main_index_data.keys())
         filtered_plates = [plate for plate in all_plates if search_term in plate.upper()]
-
-        for plate in filtered_plates:
-            self.plates_listbox.insert('end', plate)
-
-        # 過濾後清空右側面板，避免顯示舊資料
+        for plate in filtered_plates: self.plates_listbox.insert('end', plate)
         self.clear_right_panels()
 
     def _sync_main_index(self):
@@ -128,7 +217,6 @@ class IndexManagerApp:
         except (FileNotFoundError, json.JSONDecodeError):
             self.main_index_data = {}
             is_dirty = True
-
         initial_keys = set(self.main_index_data.keys())
         found_plates = {d for d in os.listdir(self.pages_dir) if os.path.isdir(os.path.join(self.pages_dir, d))}
         for plate in found_plates:
@@ -138,17 +226,6 @@ class IndexManagerApp:
         for plate in plates_to_remove: del self.main_index_data[plate]
         if initial_keys != set(self.main_index_data.keys()): is_dirty = True
         if is_dirty: self._write_main_index()
-
-    def on_plate_select(self, event):
-        selection_indices = self.plates_listbox.curselection()
-        if not selection_indices: return
-        self.current_plate = self.plates_listbox.get(selection_indices[0])
-        plate_data = self.main_index_data.get(self.current_plate, {})
-        self.company_var.set(plate_data.get("company", ""))
-        self.year_var.set(plate_data.get("year", ""))
-        self.manufacturer_var.set(plate_data.get("manufacturer", ""))
-        self.model_var.set(plate_data.get("model", ""))
-        self.load_and_display_images()
 
     def auto_save_main_index_from_ui(self, event=None):
         if not self.current_plate: return
@@ -162,7 +239,6 @@ class IndexManagerApp:
             if self._write_main_index():
                 self.show_timed_status("主索引已自動儲存。")
 
-    # --- 其他函式保持不變 ---
     def perform_health_check(self):
         if not os.path.isdir(self.pages_dir): return
         empty_folders = []
@@ -178,29 +254,7 @@ class IndexManagerApp:
         else:
             messagebox.showinfo("健康檢查結果", "太棒了！所有車牌資料夾都包含圖片。")
 
-    def _sync_vehicle_index(self, plate_folder):
-        vehicle_dir = os.path.join(self.pages_dir, plate_folder)
-        vehicle_index_path = os.path.join(vehicle_dir, 'index.json')
-        is_dirty, vehicle_data = False, {}
-        try:
-            with open(vehicle_index_path, 'r', encoding='utf-8') as f:
-                vehicle_data = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            is_dirty = True
-        initial_keys = set(vehicle_data.keys())
-        found_images = {f for f in os.listdir(vehicle_dir) if f.lower().endswith(SUPPORTED_FORMATS)}
-        for img in found_images:
-            if img not in vehicle_data:
-                match = re.match(r"(\d{4}-\d{2}-\d{2})", img)
-                date_guess = match.group(1) if match else "YYYY-MM-DD"
-                vehicle_data[img] = {"date": date_guess, "description": ""}
-        images_to_remove = [img for img in vehicle_data if img not in found_images]
-        for img in images_to_remove: del vehicle_data[img]
-        if initial_keys != set(vehicle_data.keys()): is_dirty = True
-        if is_dirty: self._write_vehicle_index(plate_folder, vehicle_data)
-
     def populate_plates_listbox(self):
-        # 現在這個函式也兼具過濾功能
         self.filter_plates()
         self.update_status_progress()
 
@@ -215,15 +269,6 @@ class IndexManagerApp:
         self.images_listbox.delete(0, 'end')
         for img in sorted(self.vehicle_index_data.keys()): self.images_listbox.insert('end', img)
         self.clear_image_fields()
-        self.update_status_progress()
-
-    def on_image_select(self, event):
-        selection_indices = self.images_listbox.curselection()
-        if not selection_indices: return
-        self.current_image = self.images_listbox.get(selection_indices[0])
-        image_data = self.vehicle_index_data.get(self.current_image, {})
-        self.image_date_var.set(image_data.get("date", ""))
-        self.image_desc_var.set(image_data.get("description", ""))
         self.update_status_progress()
 
     def _write_main_index(self):
@@ -268,25 +313,9 @@ class IndexManagerApp:
             status_text = f"顯示 {self.plates_listbox.size()} / {len(self.main_index_data)} 個項目"
         self.status_label.config(text=status_text)
 
-    def clear_right_panels(self):
-        """清空右側所有面板和輸入框"""
-        # 清空車輛詳細資料
-        self.company_var.set("")
-        self.year_var.set("")
-        self.manufacturer_var.set("")
-        self.model_var.set("")
-        # 清空圖片列表和詳細資料
-        self.images_listbox.delete(0, 'end')
-        self.current_image = None
-        self.clear_image_fields()
-
-    def clear_image_fields(self):
-        self.image_date_var.set("")
-        self.image_desc_var.set("")
-
 
 if __name__ == "__main__":
     root = Tk()
-    root.geometry("800x600")
+    root.geometry("1024x768")
     app = IndexManagerApp(root)
     root.mainloop()
