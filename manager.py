@@ -3,7 +3,8 @@ import json
 import re
 import sys  # 用於判斷作業系統
 import subprocess  # 用於在 macOS/Linux 開啟檔案
-from tkinter import Tk, Frame, Listbox, Label, Entry, Button, Scrollbar, messagebox, StringVar, PanedWindow
+# 匯入 simpledialog 來建立簡單的輸入對話框
+from tkinter import Tk, Frame, Listbox, Label, Entry, Button, Scrollbar, messagebox, StringVar, PanedWindow, simpledialog
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
@@ -69,6 +70,12 @@ class IndexManagerApp:
         copy_button.pack(side='left', expand=True, fill='x', padx=2)
         paste_button = Button(plate_actions_frame, text="貼上資訊", command=self.paste_plate_info)
         paste_button.pack(side='left', expand=True, fill='x', padx=2)
+        # --- 新增：重建索引按鈕 ---
+        self.rebuild_index_button = Button(plate_actions_frame, text="重建索引", command=self.rebuild_selected_vehicle_index, state='disabled')
+        self.rebuild_index_button.pack(side='left', expand=True, fill='x', padx=2)
+
+        # 將車牌操作按鈕分組
+        self.plate_action_buttons = [copy_button, paste_button, self.rebuild_index_button]
 
         # --- 右側：圖片管理 ---
         Label(right_pane, text="圖片 (檔案)", font=("Arial", 12, "bold")).pack(pady=5)
@@ -85,7 +92,6 @@ class IndexManagerApp:
         image_scrollbar.config(command=self.images_listbox.yview)
         self.images_listbox.bind('<<ListboxSelect>>', self.on_image_select)
 
-        # --- 修改：整合所有圖片操作按鈕 ---
         image_buttons_frame = Frame(image_management_frame)
         image_buttons_frame.pack(side='left', fill='y', padx=(5, 0))
 
@@ -94,8 +100,12 @@ class IndexManagerApp:
         self.move_down_button = Button(image_buttons_frame, text="下移 ↓", command=self.move_image_down, state='disabled')
         self.move_down_button.pack(fill='x', pady=2)
 
+        # --- 新增：重命名圖片按鈕 ---
+        self.rename_image_button = Button(image_buttons_frame, text="重命名圖片", command=self.rename_image, state='disabled')
+        self.rename_image_button.pack(fill='x', pady=(10, 2))
+
         self.open_image_button = Button(image_buttons_frame, text="在外部開啟圖片", command=self.open_image_externally, state='disabled')
-        self.open_image_button.pack(fill='x', pady=(10, 2)) # 使用 pady 增加垂直間距
+        self.open_image_button.pack(fill='x', pady=2)
         self.show_in_folder_button = Button(image_buttons_frame, text="在檔案總管中開啟", command=self.show_in_explorer, state='disabled')
         self.show_in_folder_button.pack(fill='x', pady=2)
 
@@ -116,11 +126,10 @@ class IndexManagerApp:
         image_date_entry.bind("<Return>", self.auto_save_vehicle_index_from_ui)
         image_desc_entry.bind("<FocusOut>", self.auto_save_vehicle_index_from_ui)
         image_desc_entry.bind("<Return>", self.auto_save_vehicle_index_from_ui)
-
-        # 將所有圖片操作按鈕分組，方便統一管理狀態
+        
         self.image_action_buttons = [
             self.open_image_button, self.move_up_button, self.move_down_button,
-            self.show_in_folder_button, self.delete_image_button
+            self.show_in_folder_button, self.delete_image_button, self.rename_image_button
         ]
 
         bottom_frame = Frame(root, padx=5, pady=2)
@@ -131,8 +140,100 @@ class IndexManagerApp:
 
         self.root.after(100, self.initialize_and_scan_all)
 
+    def rebuild_selected_vehicle_index(self):
+        """為當前選擇的車牌重建索引"""
+        if not self.current_plate:
+            messagebox.showinfo("提示", "請先選擇一個車牌。")
+            return
+        
+        confirm = messagebox.askyesno(
+            "確認重建索引",
+            f"您確定要為 '{self.current_plate}' 重建圖片索引嗎？\n\n"
+            "這將會：\n"
+            "- 移除無效的圖片記錄\n"
+            "- 新增資料夾中未記錄的圖片"
+        )
+        if not confirm:
+            return
+        
+        try:
+            self.status_label.config(text=f"正在為 {self.current_plate} 重建索引...")
+            self.root.update_idletasks()
+            
+            self._sync_vehicle_index(self.current_plate)
+            self.load_and_display_images() # 重新載入以顯示變更
+            
+            self.show_timed_status(f"'{self.current_plate}' 的索引已成功重建。")
+        except Exception as e:
+            messagebox.showerror("重建失敗", f"重建索引時發生錯誤：\n{e}")
+            self.update_status_progress()
+
+    def rename_image(self):
+        """重命名所選的圖片檔案及其索引項目"""
+        if not self.current_plate or not self.current_image:
+            return
+
+        old_name = self.current_image
+        # 彈出對話框讓使用者輸入新檔名
+        new_name = simpledialog.askstring(
+            "重命名圖片",
+            "請輸入新的檔案名稱:",
+            initialvalue=old_name
+        )
+
+        # 驗證使用者輸入
+        if not new_name or new_name == old_name:
+            return # 使用者取消或未變更
+
+        # 自動補上副檔名
+        old_base, old_ext = os.path.splitext(old_name)
+        new_base, new_ext = os.path.splitext(new_name)
+        if not new_ext:
+            new_name += old_ext
+        
+        # 檢查新檔名是否已存在
+        new_path = os.path.join(self.pages_dir, self.current_plate, new_name)
+        if os.path.exists(new_path):
+            messagebox.showerror("重命名失敗", f"檔案 '{new_name}' 已存在於此資料夾中。")
+            return
+
+        try:
+            old_path = os.path.join(self.pages_dir, self.current_plate, old_name)
+            
+            # 1. 重命名實體檔案
+            os.rename(old_path, new_path)
+            
+            # 2. 更新索引字典 (保持順序)
+            items = list(self.vehicle_index_data.items())
+            new_vehicle_data = {}
+            for key, value in items:
+                if key == old_name:
+                    new_vehicle_data[new_name] = value
+                else:
+                    new_vehicle_data[key] = value
+            self.vehicle_index_data = new_vehicle_data
+
+            # 3. 寫回索引檔
+            self._write_vehicle_index(self.current_plate, self.vehicle_index_data)
+
+            # 4. 更新UI
+            self.load_and_display_images()
+            
+            # 找到新項目的索引並選取它
+            try:
+                new_list_index = list(self.vehicle_index_data.keys()).index(new_name)
+                self.images_listbox.selection_set(new_list_index)
+                self.on_image_select(None)
+            except ValueError:
+                pass # 如果找不到就不選取
+
+            self.show_timed_status(f"已成功將 '{old_name}' 重命名為 '{new_name}'。")
+
+        except Exception as e:
+            messagebox.showerror("重命名失敗", f"重命名時發生錯誤：\n{e}")
+
+
     def copy_plate_info(self):
-        """將目前選擇的車輛資訊以 JSON 格式複製到剪貼簿"""
         if not self.current_plate:
             messagebox.showinfo("提示", "請先選擇一個車牌。")
             return
@@ -149,7 +250,6 @@ class IndexManagerApp:
             messagebox.showerror("複製失敗", f"無法將資訊複製到剪貼簿。\n錯誤: {e}")
 
     def paste_plate_info(self):
-        """從剪貼簿讀取 JSON 資訊並貼上到目前的車輛欄位"""
         if not self.current_plate:
             messagebox.showinfo("提示", "請先選擇一個要貼上資訊的車牌。")
             return
@@ -183,23 +283,38 @@ class IndexManagerApp:
         self.year_var.set(plate_data.get("year", ""))
         self.manufacturer_var.set(plate_data.get("manufacturer", ""))
         self.model_var.set(plate_data.get("model", ""))
+        
+        # 啟用車牌操作按鈕
+        for button in self.plate_action_buttons:
+            button.config(state='normal')
+            
         self.load_and_display_images()
 
     def on_image_select(self, event):
         selection_indices = self.images_listbox.curselection()
-        if not selection_indices: return
+        if not selection_indices:
+            for button in self.image_action_buttons:
+                button.config(state='disabled')
+            return
+            
         self.current_image = self.images_listbox.get(selection_indices[0])
         image_data = self.vehicle_index_data.get(self.current_image, {})
         self.image_date_var.set(image_data.get("date", ""))
         self.image_desc_var.set(image_data.get("description", ""))
+        
         for button in self.image_action_buttons:
             button.config(state='normal')
+        
+        index = selection_indices[0]
+        if index == 0:
+            self.move_up_button.config(state='disabled')
+        if index == self.images_listbox.size() - 1:
+            self.move_down_button.config(state='disabled')
+            
         self.update_status_progress()
 
     def open_image_externally(self):
-        """使用作業系統預設的應用程式開啟圖片"""
-        if not self.current_plate or not self.current_image:
-            return
+        if not self.current_plate or not self.current_image: return
         image_path = os.path.join(self.pages_dir, self.current_plate, self.current_image)
         if not os.path.exists(image_path):
             messagebox.showerror("錯誤", f"找不到圖片檔案：\n{image_path}")
@@ -215,18 +330,15 @@ class IndexManagerApp:
             messagebox.showerror("開啟失敗", f"無法使用預設應用程式開啟圖片。\n錯誤訊息: {e}")
 
     def show_in_explorer(self):
-        """在檔案總管中顯示所選圖片"""
-        if not self.current_plate or not self.current_image:
-            return
+        if not self.current_plate or not self.current_image: return
         image_path = os.path.join(self.pages_dir, self.current_plate, self.current_image)
         if not os.path.exists(image_path):
             messagebox.showerror("錯誤", f"找不到圖片檔案：\n{image_path}")
             return
         try:
             if sys.platform == "win32":
-                # --- 修改：使用 abspath 確保路徑格式正確，修復 explorer.exe 錯誤 ---
                 final_path = os.path.abspath(image_path)
-                subprocess.run(['explorer', '/select,', final_path], check=True)
+                subprocess.run(['explorer', '/select,', final_path])
             elif sys.platform == "darwin":
                 subprocess.run(["open", "-R", image_path], check=True)
             else:
@@ -235,7 +347,6 @@ class IndexManagerApp:
             messagebox.showerror("開啟失敗", f"無法在檔案總管中顯示圖片。\n錯誤訊息: {e}")
 
     def delete_image(self):
-        """刪除所選的圖片檔案及其索引項目"""
         if not self.current_plate or not self.current_image: return
         confirm = messagebox.askyesno(
             "確認刪除", f"您確定要永久刪除以下檔案嗎？\n\n{self.current_image}\n\n此操作無法復原！"
@@ -252,7 +363,6 @@ class IndexManagerApp:
             messagebox.showerror("刪除失敗", f"刪除圖片時發生錯誤。\n錯誤: {e}")
 
     def _move_image(self, direction):
-        """輔助函式，用於將所選圖片上移或下移"""
         selection_indices = self.images_listbox.curselection()
         if not selection_indices: return
         index = selection_indices[0]
@@ -272,11 +382,8 @@ class IndexManagerApp:
             self.on_image_select(None)
             self.show_timed_status(f"已移動 '{current_image_filename}'。")
 
-    def move_image_up(self):
-        self._move_image("up")
-
-    def move_image_down(self):
-        self._move_image("down")
+    def move_image_up(self): self._move_image("up")
+    def move_image_down(self): self._move_image("down")
 
     def clear_right_panels(self):
         self.company_var.set("")
@@ -286,6 +393,10 @@ class IndexManagerApp:
         self.images_listbox.delete(0, 'end')
         self.current_image = None
         self.clear_image_fields()
+        
+        # 禁用車牌操作按鈕
+        for button in self.plate_action_buttons:
+            button.config(state='disabled')
 
     def clear_image_fields(self):
         self.image_date_var.set("")
@@ -297,7 +408,7 @@ class IndexManagerApp:
         self._sync_main_index()
         self.status_label.config(text="正在掃描並生成所有索引...")
         self.root.update_idletasks()
-        for plate in self.main_index_data.keys():
+        for plate in sorted(self.main_index_data.keys()):
             self._sync_vehicle_index(plate)
         self.status_label.config(text="所有索引已同步完成。")
         self.populate_plates_listbox()
@@ -311,9 +422,16 @@ class IndexManagerApp:
                 vehicle_data = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             is_dirty = True
-        initial_keys = set(vehicle_data.keys())
-        found_images = {f for f in os.listdir(vehicle_dir) if f.lower().endswith(SUPPORTED_FORMATS)}
-        for img_filename in found_images:
+        
+        found_images_set = {f for f in os.listdir(vehicle_dir) if f.lower().endswith(SUPPORTED_FORMATS)}
+        
+        images_to_remove = [img for img in vehicle_data if img not in found_images_set]
+        if images_to_remove:
+            for img in images_to_remove:
+                del vehicle_data[img]
+            is_dirty = True
+
+        for img_filename in sorted(list(found_images_set)):
             entry = vehicle_data.get(img_filename)
             if not entry:
                 match = re.match(r".*?_(\d{4}-\d{2}-\d{2})", img_filename)
@@ -321,6 +439,7 @@ class IndexManagerApp:
                 entry = {"date": date_guess, "description": ""}
                 vehicle_data[img_filename] = entry
                 is_dirty = True
+            
             if "width" not in entry or "height" not in entry:
                 try:
                     with Image.open(os.path.join(vehicle_dir, img_filename)) as img:
@@ -330,10 +449,9 @@ class IndexManagerApp:
                 except Exception as e:
                     print(f"警告：無法讀取圖片 '{img_filename}' 的解析度。錯誤: {e}")
                     entry["width"], entry["height"] = 0, 0
-        images_to_remove = [img for img in vehicle_data if img not in found_images]
-        for img in images_to_remove: del vehicle_data[img]
-        if initial_keys != set(vehicle_data.keys()): is_dirty = True
-        if is_dirty: self._write_vehicle_index(plate_folder, vehicle_data)
+        
+        if is_dirty:
+            self._write_vehicle_index(plate_folder, vehicle_data)
 
     def filter_plates(self, event=None):
         search_term = self.search_var.get().upper().strip()
@@ -353,15 +471,22 @@ class IndexManagerApp:
         except (FileNotFoundError, json.JSONDecodeError):
             self.main_index_data = {}
             is_dirty = True
-        initial_keys = set(self.main_index_data.keys())
+        
         found_plates = {d for d in os.listdir(self.pages_dir) if os.path.isdir(os.path.join(self.pages_dir, d))}
+        
         for plate in found_plates:
             if plate not in self.main_index_data:
                 self.main_index_data[plate] = {"company": "", "year": "", "manufacturer": "", "model": ""}
+                is_dirty = True
+
         plates_to_remove = [plate for plate in self.main_index_data if plate not in found_plates]
-        for plate in plates_to_remove: del self.main_index_data[plate]
-        if initial_keys != set(self.main_index_data.keys()): is_dirty = True
-        if is_dirty: self._write_main_index()
+        if plates_to_remove:
+            for plate in plates_to_remove:
+                del self.main_index_data[plate]
+            is_dirty = True
+        
+        if is_dirty:
+            self._write_main_index()
 
     def auto_save_main_index_from_ui(self, event=None):
         if not self.current_plate: return
@@ -402,17 +527,21 @@ class IndexManagerApp:
                 self.vehicle_index_data = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             self.vehicle_index_data = {}
+        
         self.images_listbox.delete(0, 'end')
         for img in self.vehicle_index_data.keys():
             self.images_listbox.insert('end', img)
+        
         self.clear_image_fields()
         self.update_status_progress()
 
     def _write_main_index(self):
         main_index_path = os.path.join(self.pages_dir, 'index.json')
+        sorted_main_index_data = {key: self.main_index_data[key] for key in sorted(self.main_index_data.keys())}
         try:
             with open(main_index_path, 'w', encoding='utf-8') as f:
-                json.dump(self.main_index_data, f, indent=4, ensure_ascii=False)
+                json.dump(sorted_main_index_data, f, indent=4, ensure_ascii=False)
+            self.main_index_data = sorted_main_index_data
             return True
         except Exception as e:
             messagebox.showerror("寫入失敗", f"無法寫入主索引檔案：\n{e}")

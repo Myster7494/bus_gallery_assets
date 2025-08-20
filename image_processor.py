@@ -1,7 +1,7 @@
 import os
 import re
 import sys
-from tkinter import Tk, Label, Button, Entry, Canvas, Frame, filedialog, StringVar, BooleanVar, Checkbutton, messagebox
+from tkinter import Tk, Label, Button, Entry, Canvas, Frame, filedialog, StringVar, messagebox
 from PIL import Image, ImageTk
 from datetime import date, datetime
 import piexif
@@ -32,7 +32,8 @@ class ImageTaggerApp:
         self.image_folder = ""
         self.image_paths = []
         self.current_index = 0
-        self.plate_counters = {}
+        # --- 修改：計數器現在同時基於車牌和日期 ---
+        self.plate_date_counters = {}
         self.last_used_date = None
         self.original_img = None
         self.displayed_img_info = {}
@@ -89,8 +90,9 @@ class ImageTaggerApp:
         self.save_button = Button(bottom_frame, text="儲存並下一張", command=self.save_and_next, state='disabled')
         self.save_button.pack(side='left')
 
-        self.rename_var = BooleanVar(value=False)
-        Checkbutton(bottom_frame, text="同時重新命名原始檔案", variable=self.rename_var).pack(side='left', padx=10)
+        # --- 移除：移除重新命名原始檔案的勾選框 ---
+        # self.rename_var = BooleanVar(value=False)
+        # Checkbutton(bottom_frame, text="同時重新命名原始檔案", variable=self.rename_var).pack(side='left', padx=10)
 
         self.status_label = Label(bottom_frame, text="請選擇圖片資料夾以開始")
         self.status_label.pack(side='right')
@@ -106,7 +108,6 @@ class ImageTaggerApp:
         self.selection_start_y = event.y
         if self.selection_rect:
             self.canvas.delete(self.selection_rect)
-        # 建立一個虛線選框
         self.selection_rect = self.canvas.create_rectangle(
             self.selection_start_x, self.selection_start_y,
             self.selection_start_x, self.selection_start_y,
@@ -123,53 +124,36 @@ class ImageTaggerApp:
         """放開滑鼠，處理放大"""
         if not self.original_img or not self.selection_rect:
             return
-
-        # 取得選框在畫布上的座標
         x1, y1, x2, y2 = self.canvas.coords(self.selection_rect)
+        box_left, box_top = min(x1, x2), min(y1, y2)
+        box_right, box_bottom = max(x1, x2), max(y1, y2)
 
-        # 確保座標是左上到右下
-        box_left = min(x1, x2)
-        box_top = min(y1, y2)
-        box_right = max(x1, x2)
-        box_bottom = max(y1, y2)
-
-        # --- 座標轉換 ---
-        # 取得顯示圖片的資訊
         img_x_start = self.displayed_img_info['x_offset']
         img_y_start = self.displayed_img_info['y_offset']
         img_width = self.displayed_img_info['width']
         img_height = self.displayed_img_info['height']
 
-        # 計算縮放比例
         x_scale = self.original_img.width / img_width
         y_scale = self.original_img.height / img_height
 
-        # 將畫布上的選框座標，轉換成原始大圖上的座標
-        # (先減去圖片在畫布上的偏移量，再乘以縮放比例)
         orig_left = (box_left - img_x_start) * x_scale
         orig_top = (box_top - img_y_start) * y_scale
         orig_right = (box_right - img_x_start) * x_scale
         orig_bottom = (box_bottom - img_y_start) * y_scale
 
-        # 邊界檢查，避免超出原始圖片範圍
         orig_left = max(0, orig_left)
         orig_top = max(0, orig_top)
         orig_right = min(self.original_img.width, orig_right)
         orig_bottom = min(self.original_img.height, orig_bottom)
 
-        # 如果選框大小為零，則不處理
         if orig_left >= orig_right or orig_top >= orig_bottom:
             return
 
-        # 從原始圖片裁切
         cropped_img = self.original_img.crop((orig_left, orig_top, orig_right, orig_bottom))
-
-        # 縮放到放大預覽區的大小
         zoom_canvas_width = self.zoom_canvas.winfo_width()
         zoom_canvas_height = self.zoom_canvas.winfo_height()
         cropped_img.thumbnail((zoom_canvas_width, zoom_canvas_height), Image.Resampling.LANCZOS)
 
-        # 顯示在右側窗格
         self.zoom_photo = ImageTk.PhotoImage(cropped_img)
         self.zoom_canvas.delete("all")
         self.zoom_canvas.create_image(
@@ -181,7 +165,8 @@ class ImageTaggerApp:
         if not folder: return
         self.image_folder = folder
         self.folder_label.config(text=f"目前資料夾: {self.image_folder}")
-        self.plate_counters.clear()
+        # --- 修改：清空新的計數器 ---
+        self.plate_date_counters.clear()
         self.last_used_date = None
         self.image_paths = sorted([os.path.join(self.image_folder, f) for f in os.listdir(self.image_folder) if
                                    f.lower().endswith(SUPPORTED_FORMATS)])
@@ -201,30 +186,24 @@ class ImageTaggerApp:
         self.date_entry.config(state='normal')
         filepath = self.image_paths[self.current_index]
         self.canvas.delete("all")
-        self.zoom_canvas.delete("all")  # 清除放大區
-        self.selection_rect = None  # 重設選框
+        self.zoom_canvas.delete("all")
+        self.selection_rect = None
 
         try:
             self.original_img = Image.open(filepath)
             img_for_display = self.original_img.copy()
-
-            # 使用 `winfo_width` 可能在視窗初次繪製時得到 1，故稍作延遲確保取得正確尺寸
             self.root.update_idletasks()
             canvas_width = self.canvas.winfo_width()
             canvas_height = self.canvas.winfo_height()
-
             img_for_display.thumbnail((canvas_width, canvas_height), Image.Resampling.LANCZOS)
-
             self.displayed_img_info = {
                 'width': img_for_display.width,
                 'height': img_for_display.height,
                 'x_offset': (canvas_width - img_for_display.width) / 2,
                 'y_offset': (canvas_height - img_for_display.height) / 2
             }
-
             self.photo = ImageTk.PhotoImage(img_for_display)
             self.canvas.create_image(canvas_width / 2, canvas_height / 2, anchor='center', image=self.photo)
-
         except Exception as e:
             self.original_img = None
             self.canvas.create_text(400, 300, text=f"無法載入圖片:\n{os.path.basename(filepath)}\n{e}",
@@ -253,41 +232,27 @@ class ImageTaggerApp:
         self.last_used_date = shot_date
 
         original_filepath = self.image_paths[self.current_index]
-        original_filename = os.path.basename(original_filepath)
-
-        if self.rename_var.get():
-            file_ext = os.path.splitext(original_filename)[1]
-            new_filename = f"{shot_date}_{plate}{file_ext}"
-            new_path = os.path.join(self.image_folder, new_filename)
-            if os.path.exists(new_path) and original_filepath != new_path:
-                messagebox.showerror("錯誤", f"檔案 '{new_filename}' 已存在，無法重新命名！")
-                return
-            try:
-                if self.original_img:
-                    self.original_img.close()
-                    self.original_img = None
-
-                os.rename(original_filepath, new_path)
-                self.image_paths[self.current_index] = new_path
-                original_filepath = new_path
-            except Exception as e:
-                messagebox.showerror("重新命名失敗", f"無法重新命名檔案：\n{e}")
-                return
-
+        
+        # --- 移除：移除所有與重新命名原始檔案相關的邏輯 ---
+        
         try:
             pages_dir = os.path.join(self.script_dir, "pages")
             safe_plate_name = sanitize_foldername(plate)
             plate_dir = os.path.join(pages_dir, safe_plate_name)
             os.makedirs(plate_dir, exist_ok=True)
 
-            count = self.plate_counters.get(safe_plate_name, 0) + 1
-            file_ext = os.path.splitext(original_filename)[1]
-
+            # --- 修改：使用 (車牌, 日期) 作為鍵來取得計數 ---
+            counter_key = (safe_plate_name, shot_date)
+            count = self.plate_date_counters.get(counter_key, 0) + 1
+            
+            _ , file_ext = os.path.splitext(os.path.basename(original_filepath))
             new_copy_filename = f"{plate}_{shot_date}_{count:02d}{file_ext}"
             dest_path = os.path.join(plate_dir, new_copy_filename)
 
+            # 每次都重新開啟原始圖片以進行儲存
             img_to_save = Image.open(original_filepath)
 
+            # 準備並寫入EXIF日期資訊
             exif_date_str = shot_date.replace('-', ':') + " 00:00:00"
             exif_date_bytes = exif_date_str.encode('utf-8')
             exif_dict = {"Exif": {piexif.ExifIFD.DateTimeOriginal: exif_date_bytes,
@@ -300,15 +265,22 @@ class ImageTaggerApp:
                 img_to_save.save(dest_path)
 
             img_to_save.close()
-            self.plate_counters[safe_plate_name] = count
+            
+            # --- 修改：更新新的計數器 ---
+            self.plate_date_counters[counter_key] = count
+            
         except Exception as e:
             messagebox.showerror("複製或處理檔案失敗", f"發生錯誤：\n{e}")
+            # 如果出錯，不要跳到下一張，讓使用者可以重試
+            return
 
         self.current_index += 1
         self.load_image()
 
     def display_completion_message(self):
-        self.original_img = None
+        if self.original_img:
+            self.original_img.close()
+            self.original_img = None
         self.canvas.delete("all")
         self.zoom_canvas.delete("all")
         self.canvas.create_text(400, 300, text="所有圖片皆已處理完畢！", font=("Arial", 24), justify='center')
@@ -318,6 +290,8 @@ class ImageTaggerApp:
         self.status_label.config(text=f"完成！共處理 {len(self.image_paths)} 張圖片")
 
     def on_closing(self):
+        if self.original_img:
+            self.original_img.close()
         self.root.destroy()
 
 
