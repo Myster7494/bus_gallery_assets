@@ -1,4 +1,10 @@
 {
+    "KKA-3820_2025-08-06_01.png": {
+        "date": "2025-08-06",
+        "description": "",
+        "width": 3770,
+        "height": 3772
+    },
     "KKA-3820_2025-08-07_01.png": {
         "date": "2025-08-07",
         "description": "",
@@ -10,11 +16,5 @@
         "description": "",
         "width": 3998,
         "height": 4001
-    },
-    "KKA-3820_2025-08-06_01.png": {
-        "date": "2025-08-06",
-        "description": "",
-        "width": 3770,
-        "height": 3772
     }
 }

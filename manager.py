@@ -501,19 +501,51 @@ class IndexManagerApp:
                 self.show_timed_status("主索引已自動儲存。")
 
     def perform_health_check(self):
-        if not os.path.isdir(self.pages_dir): return
+        if not os.path.isdir(self.pages_dir):
+            messagebox.showinfo("健康檢查結果", "找不到 'pages' 資料夾。")
+            return
+
+        # 檢查 1：空的車牌資料夾
         empty_folders = []
-        for item_name in os.listdir(self.pages_dir):
-            item_path = os.path.join(self.pages_dir, item_name)
-            if os.path.isdir(item_path):
-                has_images = any(f.lower().endswith(SUPPORTED_FORMATS) for f in os.listdir(item_path))
-                if not has_images: empty_folders.append(item_name)
+        all_folders = [d for d in os.listdir(self.pages_dir) if os.path.isdir(os.path.join(self.pages_dir, d))]
+        for folder_name in all_folders:
+            folder_path = os.path.join(self.pages_dir, folder_name)
+            has_images = any(f.lower().endswith(SUPPORTED_FORMATS) for f in os.listdir(folder_path))
+            if not has_images:
+                empty_folders.append(folder_name)
+
+        # 檢查 2：缺少資訊的車輛項目
+        folders_with_missing_info = []
+        for plate, info in self.main_index_data.items():
+            # 檢查是否有任何一個欄位是空的或只包含空白字元
+            if not info.get("company", "").strip() or \
+               not info.get("year", "").strip() or \
+               not info.get("manufacturer", "").strip() or \
+               not info.get("model", "").strip():
+                folders_with_missing_info.append(plate)
+
+        # 組合報告訊息
+        message_parts = []
+        if folders_with_missing_info:
+            message_parts.append(
+                "警告：以下車輛缺少部分或全部資訊（客運、年份、廠牌、型號）：\n\n" + 
+                "\n".join(sorted(folders_with_missing_info))
+            )
+        
         if empty_folders:
-            message = "警告：以下車牌資料夾是空的：\n\n" + "\n".join(empty_folders)
-            message += "\n\n建議您將圖片放入這些資料夾，或將它們刪除。"
-            messagebox.showwarning("健康檢查結果", message)
+            message_parts.append(
+                "警告：以下車牌資料夾是空的（沒有圖片）：\n\n" + 
+                "\n".join(sorted(empty_folders))
+            )
+
+        # 顯示最終結果
+        if message_parts:
+            final_message = "\n\n".join(message_parts)
+            final_message += "\n\n建議您修正以上問題。"
+            messagebox.showwarning("健康檢查結果", final_message)
         else:
-            messagebox.showinfo("健康檢查結果", "太棒了！所有車牌資料夾都包含圖片。")
+            messagebox.showinfo("健康檢查結果", "太棒了！所有車牌資料夾都包含圖片，且所有車輛資訊都已完整填寫。")
+
 
     def populate_plates_listbox(self):
         self.filter_plates()
