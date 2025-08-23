@@ -132,7 +132,7 @@ def main():
 
                     # 在每個車輛資訊塊之間插入兩行空行（最後一個除外）
                     if i < len(sorted_plates) - 1:
-                        f.write("\n\n")
+                        f.write("\n")
 
             print("-" * 40)
             print("處理完成！")
