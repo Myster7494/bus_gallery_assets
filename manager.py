@@ -3,6 +3,7 @@ import json
 import re
 import sys  # 用於判斷作業系統
 import subprocess  # 用於在 macOS/Linux 開啟檔案
+import shutil # 用於安全地刪除資料夾
 # 匯入 simpledialog 來建立簡單的輸入對話框
 from tkinter import Tk, Frame, Listbox, Label, Entry, Button, Scrollbar, messagebox, StringVar, PanedWindow, simpledialog
 from PIL import Image
@@ -66,16 +67,20 @@ class IndexManagerApp:
 
         plate_actions_frame = Frame(left_pane)
         plate_actions_frame.pack(fill='x', padx=5, pady=5)
+        
+        # --- 新增：重命名車牌按鈕 ---
+        self.rename_plate_button = Button(plate_actions_frame, text="重命名車牌", command=self.rename_or_merge_plate, state='disabled')
+        self.rename_plate_button.pack(side='left', expand=True, fill='x', padx=2)
+        
         copy_button = Button(plate_actions_frame, text="複製資訊", command=self.copy_plate_info)
         copy_button.pack(side='left', expand=True, fill='x', padx=2)
         paste_button = Button(plate_actions_frame, text="貼上資訊", command=self.paste_plate_info)
         paste_button.pack(side='left', expand=True, fill='x', padx=2)
-        # --- 新增：重建索引按鈕 ---
         self.rebuild_index_button = Button(plate_actions_frame, text="重建索引", command=self.rebuild_selected_vehicle_index, state='disabled')
         self.rebuild_index_button.pack(side='left', expand=True, fill='x', padx=2)
 
         # 將車牌操作按鈕分組
-        self.plate_action_buttons = [copy_button, paste_button, self.rebuild_index_button]
+        self.plate_action_buttons = [copy_button, paste_button, self.rebuild_index_button, self.rename_plate_button]
 
         # --- 右側：圖片管理 ---
         Label(right_pane, text="圖片 (檔案)", font=("Arial", 12, "bold")).pack(pady=5)
@@ -139,6 +144,151 @@ class IndexManagerApp:
         self.status_label.pack(side='right', fill='x', expand=True)
 
         self.root.after(100, self.initialize_and_scan_all)
+
+    def rename_or_merge_plate(self):
+        """重命名選定的車牌，或在名稱衝突時將其與現有車牌合併。"""
+        if not self.current_plate:
+            messagebox.showinfo("提示", "請先選擇一個要重命名的車牌。")
+            return
+
+        old_name = self.current_plate
+        new_name = simpledialog.askstring(
+            "重命名或合併車牌",
+            f"請為 '{old_name}' 輸入新的車牌號碼:",
+            initialvalue=old_name
+        )
+
+        if not new_name:
+            return  # 使用者取消
+
+        new_name = new_name.strip().upper()
+        if not new_name or new_name == old_name:
+            return  # 沒有變更或輸入為空
+
+        old_path = os.path.join(self.pages_dir, old_name)
+        new_path = os.path.join(self.pages_dir, new_name)
+
+        try:
+            # 情況 1: 簡單重命名 (新名稱不存在)
+            if not os.path.isdir(new_path):
+                # 1. 重命名實體資料夾
+                os.rename(old_path, new_path)
+                
+                # 2. 在記憶體中更新主索引資料
+                self.main_index_data[new_name] = self.main_index_data.pop(old_name)
+                
+                # 3. 將更新後的主索引寫入檔案
+                self._write_main_index()
+
+                self.show_timed_status(f"已成功將 '{old_name}' 重命名為 '{new_name}'。")
+
+            # 情況 2: 合併 (新名稱已存在)
+            else:
+                confirm = messagebox.askyesno(
+                    "確認合併",
+                    f"車牌 '{new_name}' 已存在。\n\n"
+                    f"您確定要將 '{old_name}' 的所有圖片合併到 '{new_name}' 嗎？\n\n"
+                    f"這將會移動所有圖片，並根據拍攝日期自動重新編號。\n"
+                    f"'{old_name}' 資料夾將會被刪除。此操作無法復原！"
+                )
+                if not confirm:
+                    return
+
+                # 執行合併操作
+                self._perform_merge(old_name, new_name)
+                
+                # 更新主索引：移除舊項目
+                del self.main_index_data[old_name]
+                self._write_main_index()
+
+                self.show_timed_status(f"已成功將 '{old_name}' 合併入 '{new_name}'。")
+
+            # 對於兩種情況都更新 UI
+            self._post_rename_ui_update(new_name)
+
+        except Exception as e:
+            messagebox.showerror("操作失敗", f"處理車牌時發生錯誤：\n{e}")
+            # 如果出錯，重新同步所有內容以反映檔案系統的實際狀態
+            self.initialize_and_scan_all()
+
+    def _perform_merge(self, old_name, new_name):
+        """執行將一個車牌的圖片合併到另一個車牌並重新編號的後端邏輯。"""
+        old_path = os.path.join(self.pages_dir, old_name)
+        new_path = os.path.join(self.pages_dir, new_name)
+
+        # 1. 將所有圖片檔案從舊資料夾移動到新資料夾
+        for filename in os.listdir(old_path):
+            if filename.lower().endswith(SUPPORTED_FORMATS):
+                shutil.move(os.path.join(old_path, filename), os.path.join(new_path, filename))
+
+        # 2. 刪除舊資料夾
+        shutil.rmtree(old_path)
+
+        # 3. 重新編號目標資料夾中的所有圖片
+        all_images = [f for f in os.listdir(new_path) if f.lower().endswith(SUPPORTED_FORMATS)]
+        
+        # 為了避免在重新命名時發生衝突 (例如 A->B, B->C)，我們先將所有檔案重命名為暫存名稱
+        temp_suffix = "_TEMP_RENAME_"
+        for filename in all_images:
+            try:
+                os.rename(os.path.join(new_path, filename), os.path.join(new_path, filename + temp_suffix))
+            except FileExistsError: # 如果暫存檔已存在，則使用更獨特的名稱
+                os.rename(os.path.join(new_path, filename), os.path.join(new_path, filename + temp_suffix + os.urandom(4).hex()))
+
+
+        temp_images = [f for f in os.listdir(new_path) if temp_suffix in f]
+        date_groups = {}
+        
+        # 根據原始檔名中的日期對暫存檔案進行分組
+        for temp_filename in temp_images:
+            original_name = temp_filename.split(temp_suffix)[0]
+            match = re.match(r".*?_(\d{4}-\d{2}-\d{2})", original_name)
+            date_key = match.group(1) if match else "unknown_date"
+            if date_key not in date_groups:
+                date_groups[date_key] = []
+            date_groups[date_key].append(temp_filename)
+
+        # 在每個日期組內對檔案進行排序並重命名
+        for date, files in date_groups.items():
+            # 對於無法解析日期的檔案，為安全起見僅還原其原始名稱
+            if date == "unknown_date":
+                print(f"警告：在 '{new_name}' 中發現無法解析日期的檔案，將跳過重新編號：{[f.split(temp_suffix)[0] for f in files]}")
+                for temp_filename in files:
+                    original_name = temp_filename.split(temp_suffix)[0]
+                    os.rename(os.path.join(new_path, temp_filename), os.path.join(new_path, original_name))
+                continue
+            
+            # 排序以確保重新編號順序的一致性
+            for i, temp_filename in enumerate(sorted(files), 1):
+                original_name = temp_filename.split(temp_suffix)[0]
+                _, ext = os.path.splitext(original_name)
+                # 建立新的標準化檔名
+                new_filename = f"{new_name}_{date}_{i:02d}{ext.lower()}"
+                os.rename(os.path.join(new_path, temp_filename), os.path.join(new_path, new_filename))
+
+        # 4. 強制為合併後的資料夾重建索引
+        self._sync_vehicle_index(new_name)
+
+    def _post_rename_ui_update(self, select_plate_name):
+        """在重命名或合併操作後刷新 UI。"""
+        self.current_plate = None
+        self.clear_right_panels()
+        
+        # 刷新列表框
+        self.search_var.set("")
+        self.filter_plates()
+
+        # 嘗試找到並選中新的/合併後的項目
+        try:
+            all_items = self.plates_listbox.get(0, 'end')
+            if select_plate_name in all_items:
+                new_index = all_items.index(select_plate_name)
+                self.plates_listbox.selection_set(new_index)
+                self.plates_listbox.see(new_index)
+                self.on_plate_select(None) # 手動觸發選擇事件
+        except ValueError:
+            # 項目未找到，不執行任何操作
+            pass
 
     def rebuild_selected_vehicle_index(self):
         """為當前選擇的車牌重建索引"""
@@ -459,7 +609,8 @@ class IndexManagerApp:
         all_plates = sorted(self.main_index_data.keys())
         filtered_plates = [plate for plate in all_plates if search_term in plate.upper()]
         for plate in filtered_plates: self.plates_listbox.insert('end', plate)
-        self.clear_right_panels()
+        if not search_term:
+             self.clear_right_panels()
 
     def _sync_main_index(self):
         if not os.path.isdir(self.pages_dir): os.makedirs(self.pages_dir, exist_ok=True)

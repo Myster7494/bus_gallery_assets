@@ -1,4 +1,10 @@
 {
+    "001-U6": {
+        "company": "國光客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "029-FX": {
         "company": "中壢客運",
         "year": "2012",
@@ -10,6 +16,12 @@
         "year": "2015",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120UH3"
+    },
+    "056-FZ": {
+        "company": "國光客運",
+        "year": "2012",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "FX116"
     },
     "057-FX": {
         "company": "桃園客運",
@@ -95,11 +107,35 @@
         "manufacturer": "福田 FOTON",
         "model": "BJ6123C7NJD"
     },
+    "118-U6": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "128-FZ": {
+        "company": "國光客運",
+        "year": "2012",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BX212MT"
+    },
     "135-U3": {
         "company": "指南客運",
         "year": "2014",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112U1"
+    },
+    "138-U6": {
+        "company": "基隆市公車處",
+        "year": "2014",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS110SN"
+    },
+    "140-U6": {
+        "company": "基隆市公車處",
+        "year": "2014",
+        "manufacturer": "豐田 TOYOTA",
+        "model": "COASTER XZB50L-ZEMSYR"
     },
     "151-U5": {
         "company": "三重客運",
@@ -107,17 +143,53 @@
         "manufacturer": "成運 MASTER",
         "model": "BS120CN"
     },
+    "170-U6": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "173-U6": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "173-U7": {
         "company": "三重客運",
         "year": "2015",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
     },
+    "177-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "178-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
     "180-FZ": {
         "company": "三重客運",
         "year": "2011",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "181-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "187-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
     },
     "189-FW": {
         "company": "臺北客運",
@@ -131,6 +203,24 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BH115K"
     },
+    "191-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "199-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "203-U6": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
     "206-U7": {
         "company": "亦捷科際",
         "year": "2013",
@@ -143,6 +233,12 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BH115K"
     },
+    "212-U6": {
+        "company": "基隆市公車處",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS110SN"
+    },
     "220-FW": {
         "company": "臺北客運",
         "year": "2011",
@@ -154,6 +250,42 @@
         "year": "2011",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "223-U5": {
+        "company": "國光客運",
+        "year": "2014",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
+    "227-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "233-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "235-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "236-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "238-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
     },
     "239-U7": {
         "company": "亞通客運",
@@ -173,11 +305,35 @@
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112U1"
     },
+    "253-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "256-U6": {
+        "company": "基隆客運",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "270-U6": {
+        "company": "基隆市公車處",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
     "276-U7": {
         "company": "亞通客運",
         "year": "2015",
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6128HGA"
+    },
+    "279-U6": {
+        "company": "基隆市公車處",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
     },
     "283-FZ": {
         "company": "臺北客運",
@@ -185,11 +341,29 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
     },
+    "285-U6": {
+        "company": "基隆市公車處",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
     "287-FZ": {
         "company": "臺北客運",
         "year": "2012",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "287-U6": {
+        "company": "基隆市公車處",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
+    "288-U6": {
+        "company": "基隆市公車處",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
     },
     "293-FY": {
         "company": "大都會客運",
@@ -443,6 +617,12 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
     },
+    "470-U5": {
+        "company": "國光客運",
+        "year": "2014",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "475-FT": {
         "company": "桃園客運",
         "year": "2011",
@@ -454,6 +634,12 @@
         "year": "2012",
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
+    },
+    "511-FW": {
+        "company": "基隆市公車處",
+        "year": "2011",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JMSA"
     },
     "532-U7": {
         "company": "桃園客運",
@@ -677,6 +863,18 @@
         "manufacturer": "成運 MASTER",
         "model": "BS120CN"
     },
+    "673-U3": {
+        "company": "中興巴士",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH5"
+    },
+    "677-U3": {
+        "company": "中興巴士",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH5"
+    },
     "695-U7": {
         "company": "中壢客運",
         "year": "2017",
@@ -761,6 +959,12 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
     },
+    "901-FP": {
+        "company": "桃園客運",
+        "year": "2010",
+        "manufacturer": "三菱扶桑 FUSO",
+        "model": "RM11FNL2"
+    },
     "917-FP": {
         "company": "桃園客運",
         "year": "2010",
@@ -815,6 +1019,12 @@
         "manufacturer": "豐田 TOYOTA",
         "model": "COASTER XZB50L-ZEMSYR"
     },
+    "961-U7": {
+        "company": "國光客運",
+        "year": "2023",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "965-U5": {
         "company": "指南客運",
         "year": "2014",
@@ -851,6 +1061,24 @@
         "manufacturer": "華德 RAC",
         "model": "RAC-700"
     },
+    "EAA-171": {
+        "company": "基隆客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAA-181": {
+        "company": "基隆客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAA-182": {
+        "company": "基隆客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
     "EAA-585": {
         "company": "EAA-585",
         "year": "2024",
@@ -868,6 +1096,18 @@
         "year": "2025",
         "manufacturer": "金旅 GOLDEN DRAGON",
         "model": "XML6125JEV"
+    },
+    "EAL-1675": {
+        "company": "基隆客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-1681": {
+        "company": "基隆客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
     },
     "EAL-2018": {
         "company": "首都客運",
@@ -1007,11 +1247,23 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
     },
+    "FAB-229": {
+        "company": "國光客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "FAB-273": {
         "company": "三重客運",
         "year": "2015",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "FAB-301": {
+        "company": "國光客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
     },
     "FAB-305": {
         "company": "國光客運",
@@ -1037,11 +1289,65 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRVA-KJF"
     },
+    "FAB-918": {
+        "company": "國光客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
+    "FAB-965": {
+        "company": "國光客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "FAB-969": {
         "company": "國光客運",
         "year": "2016",
         "manufacturer": "大宇 DAEWOO",
         "model": "BH115K"
+    },
+    "FAC-009": {
+        "company": "基隆客運",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAC-030": {
+        "company": "基隆客運",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAC-057": {
+        "company": "基隆市公車處",
+        "year": "2017",
+        "manufacturer": "成運 MASTER",
+        "model": "MB110NS"
+    },
+    "FAC-159": {
+        "company": "基隆市公車處",
+        "year": "2022",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NS"
+    },
+    "FAC-161": {
+        "company": "基隆市公車處",
+        "year": "2022",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NS"
+    },
+    "FAC-169": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "FAC-185": {
+        "company": "基隆市公車處",
+        "year": "2014",
+        "manufacturer": "三菱扶桑 FUSO",
+        "model": "RM11FN2XC"
     },
     "FAD-021": {
         "company": "三重客運",
@@ -1169,6 +1475,30 @@
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6118HGA"
     },
+    "KKA-0002": {
+        "company": "國光客運",
+        "year": "2018",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
+    "KKA-0225": {
+        "company": "光華巴士",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "KKA-0226": {
+        "company": "光華巴士",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "KKA-0228": {
+        "company": "光華巴士",
+        "year": "2016",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
     "KKA-0253": {
         "company": "中興巴士",
         "year": "2017",
@@ -1204,6 +1534,12 @@
         "year": "2018",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120U3"
+    },
+    "KKA-0786": {
+        "company": "泰樂客運",
+        "year": "2017",
+        "manufacturer": "海格 HIGER",
+        "model": "KLQ6129"
     },
     "KKA-0867": {
         "company": "台聯客運",
@@ -1277,6 +1613,12 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BH115K"
     },
+    "KKA-1860": {
+        "company": "國光客運",
+        "year": "2017",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
     "KKA-1871": {
         "company": "三重客運",
         "year": "2017",
@@ -1290,6 +1632,12 @@
         "model": "BH115K"
     },
     "KKA-1939": {
+        "company": "國光客運",
+        "year": "2017",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BH115K"
+    },
+    "KKA-1963": {
         "company": "國光客運",
         "year": "2017",
         "manufacturer": "大宇 DAEWOO",
@@ -1643,6 +1991,12 @@
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
     },
+    "KKA-8173": {
+        "company": "國光客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "TX4312"
+    },
     "KKA-8212": {
         "company": "三重客運",
         "year": "2019",
@@ -1678,6 +2032,12 @@
         "year": "2012",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112U1"
+    },
+    "KKB-0175": {
+        "company": "光華巴士",
+        "year": "2021",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120U3"
     },
     "KKB-0296": {
         "company": "指南客運",
@@ -1738,6 +2098,18 @@
         "year": "2021",
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
+    },
+    "KKB-1921": {
+        "company": "統聯客運",
+        "year": "2010",
+        "manufacturer": "三菱扶桑 FUSO",
+        "model": "RP51JP3L"
+    },
+    "KKB-1969": {
+        "company": "基隆客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
     },
     "KKB-2069": {
         "company": "三重客運",
@@ -1864,6 +2236,36 @@
         "year": "2017",
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6128HG"
+    },
+    "KKB-8793": {
+        "company": "基隆市公車處",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSP"
+    },
+    "KKB-8795": {
+        "company": "基隆市公車處",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSP"
+    },
+    "KKC-1036": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
+    },
+    "KKC-1039": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH5"
+    },
+    "KKC-1052": {
+        "company": "基隆客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH5"
     },
     "KKC-1088": {
         "company": "中興巴士",
