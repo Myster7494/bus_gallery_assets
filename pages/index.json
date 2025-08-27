@@ -113,11 +113,41 @@
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120U1"
     },
+    "109-U7": {
+        "company": "臺北客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "111-U3": {
+        "company": "指南客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "111-U5": {
         "company": "臺北客運",
         "year": "2013",
         "manufacturer": "福田 FOTON",
         "model": "BJ6123C7NJD"
+    },
+    "112-U3": {
+        "company": "指南客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "113-U7": {
+        "company": "臺北客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "115-U3": {
+        "company": "指南客運",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
     },
     "118-U3": {
         "company": "指南客運",
@@ -142,6 +172,12 @@
         "year": "2014",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112U1"
+    },
+    "126-U7": {
+        "company": "臺北客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
     },
     "127-U3": {
         "company": "指南客運",
@@ -185,6 +221,12 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BS110SN"
     },
+    "138-U7": {
+        "company": "臺北客運",
+        "year": "2015",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "139-U7": {
         "company": "臺北客運",
         "year": "2015",
@@ -203,6 +245,18 @@
         "manufacturer": "成運 MASTER",
         "model": "BS120CN"
     },
+    "169-U3": {
+        "company": "中興巴士",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120U1"
+    },
+    "170-U3": {
+        "company": "中興巴士",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120U1"
+    },
     "170-U6": {
         "company": "基隆客運",
         "year": "2014",
@@ -220,6 +274,12 @@
         "year": "2015",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "175-U3": {
+        "company": "中興巴士",
+        "year": "2014",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120U1"
     },
     "177-U6": {
         "company": "基隆客運",
@@ -305,6 +365,12 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
     },
+    "222-FY": {
+        "company": "中興巴士",
+        "year": "2012",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "223-FW": {
         "company": "臺北客運",
         "year": "2011",
@@ -322,6 +388,12 @@
         "year": "2016",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120UH3"
+    },
+    "232-FY": {
+        "company": "中興巴士",
+        "year": "2012",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
     },
     "233-U6": {
         "company": "基隆客運",
@@ -400,6 +472,12 @@
         "year": "2012",
         "manufacturer": "大宇 DAEWOO",
         "model": "BS120CN"
+    },
+    "285-U3": {
+        "company": "欣欣客運",
+        "year": "2014",
+        "manufacturer": "宇通 YUTONG",
+        "model": "ZK6128HG"
     },
     "285-U6": {
         "company": "基隆市公車處",
@@ -647,6 +725,12 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
     },
+    "435-U5": {
+        "company": "三重客運",
+        "year": "2014",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "455-U3": {
         "company": "大都會客運",
         "year": "2014",
@@ -677,11 +761,23 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
     },
+    "469-FZ": {
+        "company": "臺北客運",
+        "year": "2012",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "470-U5": {
         "company": "國光客運",
         "year": "2014",
         "manufacturer": "大宇 DAEWOO",
         "model": "BH115K"
+    },
+    "471-FZ": {
+        "company": "臺北客運",
+        "year": "2012",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
     },
     "475-FT": {
         "company": "桃園客運",
@@ -1019,6 +1115,18 @@
         "manufacturer": "斯堪尼亞 SCANIA",
         "model": "K320IB4X2NB"
     },
+    "759-FZ": {
+        "company": "指南客運",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "762-FZ": {
+        "company": "指南客運",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "792-U3": {
         "company": "中興巴士",
         "year": "2015",
@@ -1043,11 +1151,35 @@
         "manufacturer": "大宇 DAEWOO",
         "model": "BX212MT"
     },
+    "858-FS": {
+        "company": "臺北客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "859-FS": {
+        "company": "臺北客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "862-FS": {
+        "company": "臺北客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "892-FP": {
         "company": "桃園客運",
         "year": "2010",
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
+    },
+    "892-FX": {
+        "company": "臺北客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
     },
     "897-FP": {
         "company": "桃園客運",
@@ -1127,6 +1259,12 @@
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120UH5"
     },
+    "975-U3": {
+        "company": "中興巴士",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "987-U5": {
         "company": "新北客運",
         "year": "2014",
@@ -1138,6 +1276,12 @@
         "year": "2011",
         "manufacturer": "日野 HINO",
         "model": "RK8JRSA"
+    },
+    "EAA-056": {
+        "company": "中興巴士",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
     },
     "EAA-095": {
         "company": "指南客運",
@@ -1181,7 +1325,55 @@
         "manufacturer": "總盈 TONG YING",
         "model": "TYM5120EV-6150"
     },
+    "EAL-0090": {
+        "company": "首都客運",
+        "year": "2022",
+        "manufacturer": "金旅 GOLDEN DRAGON",
+        "model": "XML6125JEV"
+    },
+    "EAL-0091": {
+        "company": "首都客運",
+        "year": "2022",
+        "manufacturer": "金旅 GOLDEN DRAGON",
+        "model": "XML6125JEV"
+    },
+    "EAL-0099": {
+        "company": "臺北客運",
+        "year": "2022",
+        "manufacturer": "金旅 GOLDEN DRAGON",
+        "model": "XML6125JEV"
+    },
+    "EAL-1163": {
+        "company": "臺北客運",
+        "year": "2022",
+        "manufacturer": "金旅 GOLDEN DRAGON",
+        "model": "XML6125JEV"
+    },
+    "EAL-1205": {
+        "company": "指南客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
     "EAL-1212": {
+        "company": "指南客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-1216": {
+        "company": "指南客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-1217": {
+        "company": "指南客運",
+        "year": "2022",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-1226": {
         "company": "指南客運",
         "year": "2022",
         "manufacturer": "金龍 KINGLONG",
@@ -1205,6 +1397,12 @@
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112UE1"
     },
+    "EAL-1728": {
+        "company": "光華巴士",
+        "year": "2023",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UE3"
+    },
     "EAL-2018": {
         "company": "首都客運",
         "year": "2023",
@@ -1225,6 +1423,30 @@
     },
     "EAL-2727": {
         "company": "首都客運",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSE"
+    },
+    "EAL-2799": {
+        "company": "臺北客運",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSE"
+    },
+    "EAL-2800": {
+        "company": "臺北客運",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSE"
+    },
+    "EAL-2996": {
+        "company": "臺北客運",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSE"
+    },
+    "EAL-2998": {
+        "company": "臺北客運",
         "year": "2023",
         "manufacturer": "成運 MASTER",
         "model": "MB120NSE"
@@ -1313,11 +1535,77 @@
         "manufacturer": "總盈 TONG YING",
         "model": "TYM5120EV-6150"
     },
+    "EAL-3112": {
+        "company": "中興巴士",
+        "year": "2023",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-3118": {
+        "company": "中興巴士",
+        "year": "2023",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-3121": {
+        "company": "指南客運",
+        "year": "2023",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
+    "EAL-3122": {
+        "company": "指南客運",
+        "year": "2023",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112UE1"
+    },
     "EAL-3130": {
         "company": "首都客運",
         "year": "2023",
         "manufacturer": "總盈 TONG YING",
         "model": "TYM5120EV-6150"
+    },
+    "EAL-3136": {
+        "company": "臺北客運",
+        "year": "2023",
+        "manufacturer": "鴻華 FOXTRON",
+        "model": "MODEL T"
+    },
+    "EAL-5006": {
+        "company": "臺北客運",
+        "year": "2023",
+        "manufacturer": "成運 MASTER",
+        "model": "MB120NSE"
+    },
+    "FAA-081": {
+        "company": "中興巴士",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAA-103": {
+        "company": "中興巴士",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAA-127": {
+        "company": "中興巴士",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAA-128": {
+        "company": "中興巴士",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
+    "FAA-151": {
+        "company": "中興巴士",
+        "year": "2013",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
     },
     "FAB-070": {
         "company": "國光客運",
@@ -1409,6 +1697,54 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRVA-KJF"
     },
+    "FAB-632": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-636": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-650": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-652": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-655": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-657": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-659": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
+    "FAB-660": {
+        "company": "臺北客運",
+        "year": "2016",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "FAB-918": {
         "company": "國光客運",
         "year": "2016",
@@ -1475,6 +1811,12 @@
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
     },
+    "FAD-060": {
+        "company": "臺北客運",
+        "year": "2017",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JRVA-KJF"
+    },
     "FAD-087": {
         "company": "臺北客運",
         "year": "2017",
@@ -1504,6 +1846,12 @@
         "year": "2017",
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
+    },
+    "FAD-179": {
+        "company": "臺北客運",
+        "year": "2017",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JRVA-KJF"
     },
     "FAD-193": {
         "company": "首都客運",
@@ -1703,6 +2051,12 @@
         "manufacturer": "日野 HINO",
         "model": "HS8JRVL-UTF"
     },
+    "KKA-1233": {
+        "company": "臺北客運",
+        "year": "2017",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
     "KKA-1253": {
         "company": "統聯客運",
         "year": "2017",
@@ -1870,6 +2224,12 @@
         "year": "2018",
         "manufacturer": "日野 HINO",
         "model": "RM8JSVU-SSF"
+    },
+    "KKA-2735": {
+        "company": "臺北客運",
+        "year": "2018",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JRVA-KJF"
     },
     "KKA-2790": {
         "company": "三重客運",
@@ -2195,6 +2555,18 @@
         "manufacturer": "日野 HINO",
         "model": "RK8JRVA-KJF"
     },
+    "KKA-8085": {
+        "company": "臺北客運",
+        "year": "2018",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JMVA-KJF"
+    },
+    "KKA-8095": {
+        "company": "臺北客運",
+        "year": "2018",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JMVA-KJF"
+    },
     "KKA-8173": {
         "company": "國光客運",
         "year": "2016",
@@ -2224,6 +2596,18 @@
         "year": "2019",
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
+    },
+    "KKA-8981": {
+        "company": "臺北客運",
+        "year": "2019",
+        "manufacturer": "宇通 YUTONG",
+        "model": "ZK6128"
+    },
+    "KKA-8991": {
+        "company": "臺北客運",
+        "year": "2019",
+        "manufacturer": "宇通 YUTONG",
+        "model": "ZK6128"
     },
     "KKA-9850": {
         "company": "臺北客運",
@@ -2321,6 +2705,12 @@
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
     },
+    "KKB-1887": {
+        "company": "臺北客運",
+        "year": "2022",
+        "manufacturer": "日野 HINO",
+        "model": "RK8JRVA-KJF"
+    },
     "KKB-1893": {
         "company": "臺北客運",
         "year": "2022",
@@ -2356,6 +2746,12 @@
         "year": "2015",
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6120UH3"
+    },
+    "KKB-2033": {
+        "company": "臺北客運",
+        "year": "2022",
+        "manufacturer": "豐田 TOYOTA",
+        "model": "COASTER GDB70L-ZETSYR"
     },
     "KKB-2069": {
         "company": "三重客運",
