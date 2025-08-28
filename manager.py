@@ -173,12 +173,23 @@ class IndexManagerApp:
             if not os.path.isdir(new_path):
                 # 1. 重命名實體資料夾
                 os.rename(old_path, new_path)
-                
-                # 2. 在記憶體中更新主索引資料
+
+                # 2. 重命名資料夾內的所有圖片
+                images_to_rename = [f for f in os.listdir(new_path) if f.lower().endswith(SUPPORTED_FORMATS)]
+                for filename in images_to_rename:
+                    # 檔名格式為 PLATE_YYYY-MM-DD_NN.ext
+                    if filename.startswith(old_name + '_'):
+                        new_filename = new_name + filename[len(old_name):]
+                        os.rename(os.path.join(new_path, filename), os.path.join(new_path, new_filename))
+
+                # 3. 在記憶體中更新主索引資料
                 self.main_index_data[new_name] = self.main_index_data.pop(old_name)
-                
-                # 3. 將更新後的主索引寫入檔案
+
+                # 4. 將更新後的主索引寫入檔案
                 self._write_main_index()
+
+                # 5. 為新資料夾強制重建索引，以更新檔名
+                self._sync_vehicle_index(new_name)
 
                 self.show_timed_status(f"已成功將 '{old_name}' 重命名為 '{new_name}'。")
 
@@ -413,10 +424,10 @@ class IndexManagerApp:
             if not all(key in data_to_paste for key in required_keys):
                 messagebox.showerror("貼上失敗", "剪貼簿中的資料格式不正確，缺少必要的欄位。")
                 return
-            self.company_var.set(data_to_paste.get("company", ""))
-            self.year_var.set(data_to_paste.get("year", ""))
-            self.manufacturer_var.set(data_to_paste.get("manufacturer", ""))
-            self.model_var.set(data_to_paste.get("model", ""))
+            self.company_var.set(data_to_paste.get("company", "").strip())
+            self.year_var.set(data_to_paste.get("year", "").strip())
+            self.manufacturer_var.set(data_to_paste.get("manufacturer", "").strip())
+            self.model_var.set(data_to_paste.get("model", "").strip())
             self.auto_save_main_index_from_ui()
             self.show_timed_status(f"已將資訊貼上至 '{self.current_plate}'。")
         except json.JSONDecodeError:
@@ -643,10 +654,15 @@ class IndexManagerApp:
         if not self.current_plate: return
         current_data = self.main_index_data[self.current_plate]
         new_data = {
-            "company": self.company_var.get(), "year": self.year_var.get(),
-            "manufacturer": self.manufacturer_var.get(), "model": self.model_var.get()
+            "company": self.company_var.get().strip(), "year": self.year_var.get().strip(),
+            "manufacturer": self.manufacturer_var.get().strip(), "model": self.model_var.get().strip()
         }
         if current_data != new_data:
+            self.company_var.set(new_data["company"])
+            self.year_var.set(new_data["year"])
+            self.manufacturer_var.set(new_data["manufacturer"])
+            self.model_var.set(new_data["model"])
+            
             self.main_index_data[self.current_plate] = new_data
             if self._write_main_index():
                 self.show_timed_status("主索引已自動儲存。")
