@@ -1025,6 +1025,12 @@
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6128HG"
     },
+    "598-FY": {
+        "company": "桃園客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
+    },
     "598-U6": {
         "company": "指南客運",
         "year": "2015",
@@ -1036,6 +1042,12 @@
         "year": "2015",
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6128HG"
+    },
+    "600-FY": {
+        "company": "桃園客運",
+        "year": "2013",
+        "manufacturer": "大宇 DAEWOO",
+        "model": "BS120CN"
     },
     "617-FR": {
         "company": "指南客運",
@@ -2123,6 +2135,12 @@
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6118HGA"
     },
+    "FAD-619": {
+        "company": "桃園客運",
+        "year": "2016",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
     "FAD-627": {
         "company": "桃園客運",
         "year": "2016",
@@ -2550,6 +2568,12 @@
         "model": "ZK6128HG"
     },
     "KKA-3725": {
+        "company": "桃園客運",
+        "year": "2017",
+        "manufacturer": "宇通 YUTONG",
+        "model": "ZK6128HG"
+    },
+    "KKA-3726": {
         "company": "桃園客運",
         "year": "2017",
         "manufacturer": "宇通 YUTONG",
