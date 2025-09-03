@@ -575,6 +575,12 @@
         "manufacturer": "宇通 YUTONG",
         "model": "ZK6128HG"
     },
+    "337-FZ": {
+        "company": "統聯客運",
+        "year": "2012",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6112U1"
+    },
     "337-U7": {
         "company": "亞通客運",
         "year": "2017",
@@ -1577,12 +1583,6 @@
         "manufacturer": "金龍 KINGLONG",
         "model": "KL6112UE1"
     },
-    "EAL-1728": {
-        "company": "光華巴士",
-        "year": "2023",
-        "manufacturer": "金龍 KINGLONG",
-        "model": "KL6120UE3"
-    },
     "EAL-2018": {
         "company": "首都客運",
         "year": "2023",
@@ -2387,6 +2387,12 @@
         "manufacturer": "成運 MASTER",
         "model": "MB120NS"
     },
+    "KKA-1728": {
+        "company": "臺北客運",
+        "year": "2017",
+        "manufacturer": "日野 HINO",
+        "model": "HS8JRVL-UTF"
+    },
     "KKA-1855": {
         "company": "國光客運",
         "year": "2017",
@@ -2944,6 +2950,12 @@
         "year": "2020",
         "manufacturer": "日野 HINO",
         "model": "RN8JRVA-KJF"
+    },
+    "KKB-1605": {
+        "company": "指南客運",
+        "year": "2015",
+        "manufacturer": "金龍 KINGLONG",
+        "model": "KL6120UH3"
     },
     "KKB-1623": {
         "company": "臺北客運",
